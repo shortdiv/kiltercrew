@@ -1,13 +1,24 @@
 defmodule KiltercrewWeb.SeshChannel do
-  use KiltercrewWeb, :channel
+  # use KiltercrewWeb, :channel
+  use Phoenix.Channel
 
   @impl true
   def join("sesh:lobby", payload, socket) do
     if authorized?(payload) do
+      Process.flag(:trap_exit, true)
+      send(self(), {:after_join, payload})
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
+  end
+
+  @impl true
+  def handle_info({:after_join, _message}, socket) do
+    # user_name = socket.assigns.current_user.name
+    broadcast!(socket, "crew:joined", %{user_name: "hardcoded"})
+    push(socket, "joined", %{status: "connected"})
+    {:noreply, socket}
   end
 
   # Channels can be used in a request/response fashion
