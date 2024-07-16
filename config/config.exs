@@ -11,6 +11,9 @@ config :kiltercrew,
   ecto_repos: [Kiltercrew.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :kiltercrew, Kiltercrew.Repo,
+  database: "/priv/database.db"
+
 # Configures the endpoint
 config :kiltercrew, KiltercrewWeb.Endpoint,
   url: [host: "localhost"],
