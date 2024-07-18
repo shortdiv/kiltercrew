@@ -1,0 +1,61 @@
+# Data climb
+
+```elixir
+Mix.install([
+  {:req, "~> 0.5.2"},
+  {:kino_db, "~> 0.2.8"},
+  {:kino, "~> 0.13.2"},
+  {:exqlite, "~> 0.11"}
+])
+```
+
+## Section
+
+```elixir
+app_package_names = %{
+  "aurora" => "auroraboard",
+  "decoy" => "decoyboard",
+  "grasshopper" => "grasshopperboard",
+  "kilter" => "kilterboard",
+  "tension" => "tensionboard2",
+  "touchstone" => "touchstoneboard"
+}
+
+download_database = fn board ->
+  Req.get(
+    "https://d.cdnpure.com/b/APK/com.auroraclimbing.#{app_package_names[board]}?version=latest",
+    headers: [
+      {"User-Agent",
+       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"}
+    ]
+  ).body
+end
+```
+
+```elixir
+body = download_database.("kilter")
+# body = File.read!(Path.expand("~/Downloads/Kilter Board_3.4.10_APKPure.apk"))
+:zip.unzip(body,
+  cwd: ~c"/Users/div/OProjects/scratch/livebooks/",
+  file_list: [~c"assets/db.sqlite3"]
+)
+
+# :zip.unzip(body, cwd: body, file_list: [~c"assets/db.sqlite3"])
+```
+
+<!-- livebook:{"attrs":"eyJkYXRhYmFzZV9wYXRoIjoiL1VzZXJzL2Rpdi9wcm9qZWN0cy9zY3JhdGNoL2xpdmVib29rcy9hc3NldHMvZGIuc3FsaXRlMyIsInR5cGUiOiJzcWxpdGUiLCJ2YXJpYWJsZSI6ImNvbm4ifQ","chunks":null,"kind":"Elixir.KinoDB.ConnectionCell","livebook_object":"smart_cell"} -->
+
+```elixir
+opts = [database: "/Users/div/projects/scratch/livebooks/assets/db.sqlite3"]
+{:ok, conn} = Kino.start_child({Exqlite, opts})
+```
+
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoic3FsaXRlIiwidmFyaWFibGUiOiJjb25uIn0sImRhdGFfZnJhbWVfYWxpYXMiOiJFbGl4aXIuRXhwbG9yZXIuRGF0YUZyYW1lIiwicXVlcnkiOiJzZWxlY3QgKiBmcm9tIGNsaW1iczsiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQiLCJ0aW1lb3V0IjpudWxsfQ","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result = Exqlite.query!(conn, "select * from climbs;", [])
+```
+
+```elixir
+
+```

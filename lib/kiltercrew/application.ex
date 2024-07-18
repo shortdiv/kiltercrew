@@ -17,7 +17,8 @@ defmodule Kiltercrew.Application do
       # Start a worker by calling: Kiltercrew.Worker.start_link(arg)
       # {Kiltercrew.Worker, arg},
       # Start to serve requests, typically the last entry
-      KiltercrewWeb.Endpoint
+      KiltercrewWeb.Endpoint,
+      Kiltercrew.DatabaseSync
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
